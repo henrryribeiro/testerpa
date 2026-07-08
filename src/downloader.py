@@ -1,19 +1,16 @@
 #primeira parte do teste, fazer o download do arquivo.
 
 import requests
-import os
+# Realiza requisições HTTP
 
 
-def download_file(url, output_path):
-
+def download_file(url, destination):
+    # Faz o download da planilha
     response = requests.get(url)
 
-    response.raise_for_status()
-
-    with open(output_path, "wb") as file:
+    # Salva o arquivo no computador
+    with open(destination, "wb") as file:
         file.write(response.content)
 
-    if os.path.exists(output_path):
-        print("Arquivo salvo:", output_path)
-    else:
-        print("Falha no download")
+    # Confirma o download
+    print(f"Arquivo salvo: {destination}")
