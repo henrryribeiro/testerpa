@@ -1,3 +1,6 @@
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
 from selenium.webdriver.common.by import By
 # Localiza elementos da página
 
@@ -60,7 +63,7 @@ class UiBankPage:
         field.send_keys(str(age))
 
     def fill_form(self, request):
-    #preenche todo formulario com os dados da planilha  
+    #preenche todo formulario com os dados da planilha
         self.fill_email(
             request["Email do Solicitante"]
         )
@@ -87,5 +90,30 @@ class UiBankPage:
             By.ID,
             "submitButton"
         )
-
         button.click()
+
+    def get_result(self):
+        # Aguarda o resultado aparecer
+        WebDriverWait(self.driver, 10).until(
+            EC.visibility_of_element_located(
+                (By.ID, "rateValue")
+            )
+            )
+
+        # Captura a taxa APR
+        rate = self.driver.find_element(
+            By.ID,
+            "rateValue"
+            ).text
+
+        # Captura o ID do empréstimo
+        loan_id = self.driver.find_element(
+            By.ID,
+            "loanID"
+        ).text
+
+        # Retorna os dados da solicitação
+        return {
+            "APR": rate,
+            "Loan ID": loan_id
+        }

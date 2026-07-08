@@ -51,6 +51,11 @@ page.fill_form(request)
 # Envia o formulário
 page.submit()
 
-# Mantém o navegador aberto para testes
+# Captura o retorno
+result = page.get_result()
+
+# Exibe o resultado no console
+print(result)
+
 input("Pressione ENTER para fechar: ")
 
