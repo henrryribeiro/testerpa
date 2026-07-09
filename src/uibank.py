@@ -1,3 +1,4 @@
+from selenium.common import TimeoutException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -92,28 +93,36 @@ class UiBankPage:
         )
         button.click()
 
+# adicionando tratamento de erro
     def get_result(self):
-        # Aguarda o resultado aparecer
-        WebDriverWait(self.driver, 10).until(
-            EC.visibility_of_element_located(
-                (By.ID, "rateValue")
-            )
+        try:
+            # Aguarda resultado aprovado
+            WebDriverWait(self.driver, 10).until(
+                EC.visibility_of_element_located(
+                    (By.ID, "rateValue")
+                )
             )
 
-        # Captura a taxa APR
-        rate = self.driver.find_element(
-            By.ID,
-            "rateValue"
+            # Captura APR
+            rate = self.driver.find_element(
+                By.ID,
+                "rateValue"
             ).text
 
-        # Captura o ID do empréstimo
-        loan_id = self.driver.find_element(
-            By.ID,
-            "loanID"
-        ).text
+            # Captura ID
+            loan_id = self.driver.find_element(
+                By.ID,
+                "loanID"
+            ).text
 
-        # Retorna os dados da solicitação
-        return {
-            "APR": rate,
-            "Loan ID": loan_id
-        }
+            return {
+                "Status": "Approved",
+                "APR": rate,
+                "Loan ID": loan_id
+            }
+
+        except TimeoutException:
+            return {
+                "Status": "Failed",
+                "Message": "Loan was not approved"
+            }
